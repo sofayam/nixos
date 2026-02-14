@@ -65,9 +65,11 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
    users.users.mark = {
      isNormalUser = true;
+     shell = pkgs.zsh;
      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        tree
+       zsh
      ];
    };
 
@@ -79,7 +81,43 @@
      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
      wget
      git
+     tmux
+     htop
+     curl
    ];
+
+programs.zsh.enable = true;  # or bash with better config
+
+programs.starship.enable = true;  # nice prompt
+
+
+# Auto-upgrade and garbage collection
+system.autoUpgrade.enable = true;
+nix.gc = {
+  automatic = true;
+  dates = "weekly";
+  options = "--delete-older-than 30d";
+};
+
+# Nix flakes (newer, fancier way to manage configs)
+nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+# Allow unfree packages if you need them
+nixpkgs.config.allowUnfree = true;
+
+# Automatic timezone detection
+time.timeZone = "Europe/Lisbon";  # or your timezone
+
+
+# Better man pages
+documentation.dev.enable = true;
+
+# Enable mosh (better than SSH for flaky connections)
+programs.mosh.enable = true;
+
+# Fish-style autosuggestions for zsh
+programs.zsh.autosuggestions.enable = true;
+programs.zsh.syntaxHighlighting.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
